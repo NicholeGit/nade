@@ -5,17 +5,25 @@ import (
 
 	"github.com/NicholeGit/nade/framework"
 	"github.com/NicholeGit/nade/framework/contract"
+	"github.com/pkg/errors"
 )
+
+func init() {
+	err := framework.Register(&NadeConfigProvider{})
+	if err != nil {
+		panic(errors.Wrap(err, "Register error"))
+	}
+}
 
 type NadeConfigProvider struct{}
 
 // Register a new function for make a service instance
-func (provider *NadeConfigProvider) Register(c framework.IContainer) framework.NewInstance {
+func (provider *NadeConfigProvider) Register(_ framework.IContainer) framework.NewInstance {
 	return NewNadeConfig
 }
 
 // Boot will call when the service instantiate
-func (provider *NadeConfigProvider) Boot(c framework.IContainer) error {
+func (provider *NadeConfigProvider) Boot(_ framework.IContainer) error {
 	return nil
 }
 
@@ -38,4 +46,8 @@ func (provider *NadeConfigProvider) Params(c framework.IContainer) []interface{}
 // Name define the name for this service
 func (provider *NadeConfigProvider) Name() string {
 	return contract.ConfigKey
+}
+
+func (provider *NadeConfigProvider) DependOn() []string {
+	return []string{contract.AppKey, contract.EnvKey}
 }

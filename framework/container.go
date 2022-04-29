@@ -7,10 +7,25 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Container 是一个服务容器，提供绑定服务和获取服务的功能
+type IDepend interface {
+	DependOn() []string
+}
+
+var providers = make(map[string]IServiceProvider)
+
+func Register(p IServiceProvider) error {
+	if _, ok := providers[p.Name()]; ok {
+		return errors.New(p.Name() + " is register repeat !")
+	}
+	providers[p.Name()] = p
+	return nil
+}
+
+// IContainer 是一个服务容器，提供绑定服务和获取服务的功能
 type IContainer interface {
-	// Bind 绑定一个服务提供者，如果关键字凭证已经存在，会进行替换操作，返回error
-	Bind(provider ServiceProvider) error
+	// BindAll 绑定所有 Provider
+	BindAll() error
+
 	// IsBind 关键字凭证是否已经绑定服务提供者
 	IsBind(key string) bool
 
@@ -30,21 +45,24 @@ var _ IContainer = &NadeContainer{}
 
 // NadeContainer 是服务容器的具体实现
 type NadeContainer struct {
-	// IContainer
 	// providers 存储注册的服务提供者，key为字符串凭证
-	providers map[string]ServiceProvider
+	providers map[string]IServiceProvider
 	// instance 存储具体的实例，key为字符串凭证
 	instances map[string]interface{}
 	// lock 用于锁住对容器的变更操作
 	lock sync.RWMutex
+
+	// 处理依赖缓存
+	providerChan chan IServiceProvider
 }
 
 // NewNadeContainer 创建一个服务容器
 func NewNadeContainer() *NadeContainer {
 	return &NadeContainer{
-		providers: map[string]ServiceProvider{},
-		instances: map[string]interface{}{},
-		lock:      sync.RWMutex{},
+		providers:    map[string]IServiceProvider{},
+		instances:    map[string]interface{}{},
+		lock:         sync.RWMutex{},
+		providerChan: make(chan IServiceProvider, len(providers)),
 	}
 }
 
@@ -59,11 +77,45 @@ func (n *NadeContainer) PrintProviders() []string {
 	return ret
 }
 
+func (n *NadeContainer) BindAll() error {
+	// 所有的插件
+	for _, p := range providers {
+		n.providerChan <- p
+	}
+
+	num := len(n.providerChan)
+	for num > 0 {
+		p := <-n.providerChan
+		canSetup := true
+		if deps, ok := p.(IDepend); ok {
+			depends := deps.DependOn()
+			for _, dependName := range depends {
+				if p := n.findServiceProvider(dependName); p == nil {
+					// 有未加载的插件
+					canSetup = false
+					break
+				}
+			}
+		}
+		if canSetup {
+			err := n.bind(p)
+			if err != nil {
+				return errors.Wrap(err, p.Name()+" bind is error!")
+			}
+			num--
+		} else {
+			// 如果插件不能被setup, 这个plugin就塞入到最后一个队列
+			n.providerChan <- p
+		}
+	}
+	return nil
+}
+
 // Bind 将服务容器和关键字做了绑定
-func (n *NadeContainer) Bind(provider ServiceProvider) error {
+func (n *NadeContainer) bind(provider IServiceProvider) error {
+	fmt.Println("Bind", provider.Name())
 	n.lock.Lock()
 	key := provider.Name()
-
 	n.providers[key] = provider
 	n.lock.Unlock()
 
@@ -86,12 +138,12 @@ func (n *NadeContainer) Bind(provider ServiceProvider) error {
 }
 
 func (n *NadeContainer) IsBind(key string) bool {
+	n.lock.RLock()
+	defer n.lock.RUnlock()
 	return n.findServiceProvider(key) != nil
 }
 
-func (n *NadeContainer) findServiceProvider(key string) ServiceProvider {
-	n.lock.RLock()
-	defer n.lock.RUnlock()
+func (n *NadeContainer) findServiceProvider(key string) IServiceProvider {
 	if sp, ok := n.providers[key]; ok {
 		return sp
 	}
@@ -114,7 +166,7 @@ func (n *NadeContainer) MakeNew(key string, params []interface{}) (interface{}, 
 	return n.make(key, params, true)
 }
 
-func (n *NadeContainer) newInstance(sp ServiceProvider, params []interface{}) (interface{}, error) {
+func (n *NadeContainer) newInstance(sp IServiceProvider, params []interface{}) (interface{}, error) {
 	// force new a
 	if err := sp.Boot(n); err != nil {
 		return nil, err
@@ -154,7 +206,6 @@ func (n *NadeContainer) make(key string, params []interface{}, forceNew bool) (i
 	if err != nil {
 		return nil, err
 	}
-
 	n.instances[key] = inst
 	return inst, nil
 }
