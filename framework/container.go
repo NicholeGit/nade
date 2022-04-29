@@ -100,7 +100,7 @@ func (n *NadeContainer) BindAll() error {
 		if canSetup {
 			err := n.bind(p)
 			if err != nil {
-				panic(p.Name() + " Setup is err !" + err.Error())
+				return errors.Wrap(err, p.Name()+" bind is error!")
 			}
 			num--
 		} else {
