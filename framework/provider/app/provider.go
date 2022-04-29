@@ -3,7 +3,15 @@ package app
 import (
 	"github.com/NicholeGit/nade/framework"
 	"github.com/NicholeGit/nade/framework/contract"
+	"github.com/pkg/errors"
 )
+
+func init() {
+	err := framework.Register(&NadeAppProvider{})
+	if err != nil {
+		panic(errors.Wrap(err, "Register error"))
+	}
+}
 
 // NadeAppProvider 提供App的具体实现方法
 type NadeAppProvider struct {
@@ -11,12 +19,12 @@ type NadeAppProvider struct {
 }
 
 // Register 注册nadeApp方法
-func (n *NadeAppProvider) Register(container framework.IContainer) framework.NewInstance {
+func (n *NadeAppProvider) Register(_ framework.IContainer) framework.NewInstance {
 	return NewNadeApp
 }
 
 // Boot 启动调用
-func (n *NadeAppProvider) Boot(container framework.IContainer) error {
+func (n *NadeAppProvider) Boot(_ framework.IContainer) error {
 	return nil
 }
 

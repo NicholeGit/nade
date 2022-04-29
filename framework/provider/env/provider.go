@@ -3,14 +3,22 @@ package env
 import (
 	"github.com/NicholeGit/nade/framework"
 	"github.com/NicholeGit/nade/framework/contract"
+	"github.com/pkg/errors"
 )
+
+func init() {
+	err := framework.Register(&NadeEnvProvider{})
+	if err != nil {
+		panic(errors.Wrap(err, "Register error"))
+	}
+}
 
 type NadeEnvProvider struct {
 	Folder string
 }
 
 // Register registe a new function for make a service instance
-func (provider *NadeEnvProvider) Register(c framework.IContainer) framework.NewInstance {
+func (provider *NadeEnvProvider) Register(_ framework.IContainer) framework.NewInstance {
 	return NewNadeEnv
 }
 
@@ -27,11 +35,15 @@ func (provider *NadeEnvProvider) IsDefer() bool {
 }
 
 // Params define the necessary params for NewInstance
-func (provider *NadeEnvProvider) Params(c framework.IContainer) []interface{} {
+func (provider *NadeEnvProvider) Params(_ framework.IContainer) []interface{} {
 	return []interface{}{provider.Folder}
 }
 
 // Name define the name for this service
 func (provider *NadeEnvProvider) Name() string {
 	return contract.EnvKey
+}
+
+func (provider *NadeEnvProvider) DependOn() []string {
+	return []string{contract.AppKey}
 }
