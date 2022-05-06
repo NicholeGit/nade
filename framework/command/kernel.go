@@ -4,6 +4,8 @@ import "github.com/spf13/cobra"
 
 // AddKernelCommands will add all command/* to root command
 func AddKernelCommands(root *cobra.Command) {
+	// app 命令
+	root.AddCommand(initAppCommand())
 	// build 命令
 	root.AddCommand(initBuildCommand())
 	// go build
@@ -14,4 +16,8 @@ func AddKernelCommands(root *cobra.Command) {
 	root.AddCommand(initEnvCommand())
 	// config 命令
 	root.AddCommand(initConfigCommand())
+	// provider
+	root.AddCommand(initProviderCommand())
+	// cron 命令
+	root.AddCommand(initCronCommand())
 }

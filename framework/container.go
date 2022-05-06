@@ -86,25 +86,25 @@ func (n *NadeContainer) BindAll() error {
 	num := len(n.providerChan)
 	for num > 0 {
 		p := <-n.providerChan
-		canSetup := true
+		canBind := true
 		if deps, ok := p.(IDepend); ok {
 			depends := deps.DependOn()
 			for _, dependName := range depends {
 				if p := n.findServiceProvider(dependName); p == nil {
-					// 有未加载的插件
-					canSetup = false
+					// 有未加载的前置插件
+					canBind = false
 					break
 				}
 			}
 		}
-		if canSetup {
+		if canBind {
 			err := n.bind(p)
 			if err != nil {
 				return errors.Wrap(err, p.Name()+" bind is error!")
 			}
 			num--
 		} else {
-			// 如果插件不能被setup, 这个plugin就塞入到最后一个队列
+			// 如果插件不能被 bind, 这个插件就塞入到最后一个队列
 			n.providerChan <- p
 		}
 	}
