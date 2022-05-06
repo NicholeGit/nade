@@ -17,9 +17,7 @@ var cmdCommand = &cobra.Command{
 	Use:   "command",
 	Short: "控制台命令相关",
 	RunE: func(c *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			c.Help()
-		}
+		_ = c.Help()
 		return nil
 	},
 }

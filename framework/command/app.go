@@ -44,7 +44,7 @@ var appCommand = &cobra.Command{
 	Long:  "业务应用控制命令，其包含业务启动，关闭，重启，查询等功能",
 	RunE: func(c *cobra.Command, args []string) error {
 		// 打印帮助文档
-		c.Help()
+		_ = c.Help()
 		return nil
 	},
 }
@@ -54,8 +54,7 @@ var appStartCommand = &cobra.Command{
 	Use:   "start",
 	Short: "启动一个app服务",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetCommandContext(c).Container
-
+		container := GetCommandContextKey(c).Container()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 		pidFolder := appService.RuntimeFolder()
 		if !util.Exists(pidFolder) {
@@ -132,7 +131,7 @@ var appStartCommand = &cobra.Command{
 }
 
 // 启动AppServer, 这个函数会将当前goroutine阻塞
-func startAppServe(c framework.IContainer) error {
+func startAppServe(_ framework.IContainer) error {
 	// 当前的goroutine等待信号量
 	quit := make(chan os.Signal)
 	// 监控信号：SIGINT, SIGTERM, SIGQUIT
@@ -148,7 +147,7 @@ var appStateCommand = &cobra.Command{
 	Use:   "state",
 	Short: "获取启动的app的pid",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetCommandContext(c).Container
+		container := GetCommandContextKey(c).Container()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
 		// 获取pid
@@ -179,7 +178,7 @@ var appStopCommand = &cobra.Command{
 	Use:   "stop",
 	Short: "停止一个已经启动的app服务",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetCommandContext(c).Container
+		container := GetCommandContextKey(c).Container()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
 		// GetPid
@@ -213,7 +212,7 @@ var appRestartCommand = &cobra.Command{
 	Use:   "restart",
 	Short: "重新启动一个app服务",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetCommandContext(c).Container
+		container := GetCommandContextKey(c).Container()
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
 		// GetPid

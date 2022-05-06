@@ -17,7 +17,7 @@ var providerCommand = &cobra.Command{
 	Short: "服务提供相关命令",
 	RunE: func(c *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			c.Help()
+			_ = c.Help()
 		}
 		return nil
 	},
@@ -28,7 +28,7 @@ var providerListCommand = &cobra.Command{
 	Use:   "list",
 	Short: "列出容器内的所有服务",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetCommandContext(c).Container
+		container := GetCommandContextKey(c).Container()
 		hadeContainer := container.(*framework.NadeContainer)
 		// 获取字符串凭证
 		list := hadeContainer.NameList()

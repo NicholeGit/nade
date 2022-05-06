@@ -18,4 +18,6 @@ func AddKernelCommands(root *cobra.Command) {
 	root.AddCommand(initConfigCommand())
 	// provider
 	root.AddCommand(initProviderCommand())
+	// cron 命令
+	root.AddCommand(initCronCommand())
 }
