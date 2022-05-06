@@ -16,4 +16,8 @@ type App interface {
 	ConfigFolder() string
 	// LoadAppConfig 加载新的AppConfig，key为对应的函数转为小写下划线，比如ConfigFolder => config_folder
 	LoadAppConfig(kv map[string]string)
+	// RuntimeFolder 定义业务的运行中间态信息
+	RuntimeFolder() string
+	// LogFolder 定义了日志所在路径
+	LogFolder() string
 }

@@ -75,3 +75,26 @@ func (app *NadeApp) LoadAppConfig(kv map[string]string) {
 		app.configMap[key] = val
 	}
 }
+
+func (app *NadeApp) StorageFolder() string {
+	if val, ok := app.configMap["storage_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.BaseFolder(), "storage")
+}
+
+// RuntimeFolder 定义业务的运行中间态信息
+func (app NadeApp) RuntimeFolder() string {
+	if val, ok := app.configMap["runtime_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.StorageFolder(), "runtime")
+}
+
+// LogFolder 表示日志存放地址
+func (app NadeApp) LogFolder() string {
+	if val, ok := app.configMap["log_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.StorageFolder(), "log")
+}
