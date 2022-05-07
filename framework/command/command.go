@@ -1,8 +1,10 @@
 package command
 
 import (
+	"bytes"
 	"context"
 	"log"
+	"runtime/debug"
 	"sync"
 
 	"github.com/NicholeGit/nade/framework"
@@ -98,7 +100,10 @@ func (k *CommandContextKey) AddCronCommand(ctx context.Context, spec string, cmd
 		// 如果后续的command出现panic，这里要捕获
 		defer func() {
 			if err := recover(); err != nil {
-				log.Println(err)
+				buf := debug.Stack()
+				buf = bytes.ReplaceAll(buf, []byte("\n"), []byte("\\n"))
+
+				log.Printf("panic\t%v\t%s", err, buf)
 			}
 		}()
 

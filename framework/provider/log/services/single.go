@@ -25,8 +25,8 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 	ctxFielder := params[2].(contract.CtxFielder)
 	formatter := params[3].(contract.Formatter)
 
-	appService := c.MustMake(contract.AppKey).(contract.App)
-	configService := c.MustMake(contract.ConfigKey).(contract.Config)
+	appService := c.MustMake(contract.AppKey).(contract.IApp)
+	configService := c.MustMake(contract.ConfigKey).(contract.IConfig)
 
 	log := &NadeSingleLog{}
 	log.SetLevel(level)

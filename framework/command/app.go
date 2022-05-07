@@ -55,7 +55,7 @@ var appStartCommand = &cobra.Command{
 	Short: "启动一个app服务",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 		pidFolder := appService.RuntimeFolder()
 		if !util.Exists(pidFolder) {
 			if err := os.MkdirAll(pidFolder, os.ModePerm); err != nil {
@@ -148,7 +148,7 @@ var appStateCommand = &cobra.Command{
 	Short: "获取启动的app的pid",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		// 获取pid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "app.pid")
@@ -179,7 +179,7 @@ var appStopCommand = &cobra.Command{
 	Short: "停止一个已经启动的app服务",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		// GetPid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "app.pid")
@@ -213,7 +213,7 @@ var appRestartCommand = &cobra.Command{
 	Short: "重新启动一个app服务",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		// GetPid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "app.pid")
@@ -242,7 +242,7 @@ var appRestartCommand = &cobra.Command{
 
 				// 获取closeWait
 				closeWait := 5
-				configService := container.MustMake(contract.ConfigKey).(contract.Config)
+				configService := container.MustMake(contract.ConfigKey).(contract.IConfig)
 				if configService.IsExist("app.close_wait") {
 					closeWait = configService.GetInt("app.close_wait")
 				}

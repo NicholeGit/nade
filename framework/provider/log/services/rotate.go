@@ -31,8 +31,8 @@ func NewNadeRotateLog(params ...interface{}) (interface{}, error) {
 	ctxFielder := params[2].(contract.CtxFielder)
 	formatter := params[3].(contract.Formatter)
 
-	appService := c.MustMake(contract.AppKey).(contract.App)
-	configService := c.MustMake(contract.ConfigKey).(contract.Config)
+	appService := c.MustMake(contract.AppKey).(contract.IApp)
+	configService := c.MustMake(contract.ConfigKey).(contract.IConfig)
 
 	// 从配置文件中获取folder信息，否则使用默认的LogFolder文件夹
 	folder := appService.LogFolder()

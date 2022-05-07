@@ -21,7 +21,7 @@ import (
 	"github.com/NicholeGit/nade/framework/contract"
 )
 
-var _ contract.Config = &NadeConfig{}
+var _ contract.IConfig = &NadeConfig{}
 
 // NadeConfig  表示hade框架的配置文件服务
 type NadeConfig struct {
@@ -103,15 +103,24 @@ func NewNadeConfig(params ...interface{}) (interface{}, error) {
 
 					if ev.Op&fsnotify.Create == fsnotify.Create {
 						log.Println("创建文件 : ", ev.Name)
-						nadeConf.loadConfigFile(folder, fileName)
+						err := nadeConf.loadConfigFile(folder, fileName)
+						if err != nil {
+							log.Println("loadConfigFile is err !", err)
+						}
 					}
 					if ev.Op&fsnotify.Write == fsnotify.Write {
 						log.Println("写入文件 : ", ev.Name)
-						nadeConf.loadConfigFile(folder, fileName)
+						err := nadeConf.loadConfigFile(folder, fileName)
+						if err != nil {
+							log.Println("loadConfigFile is err !", err)
+						}
 					}
 					if ev.Op&fsnotify.Remove == fsnotify.Remove {
 						log.Println("删除文件 : ", ev.Name)
-						nadeConf.removeConfigFile(folder, fileName)
+						err := nadeConf.removeConfigFile(folder, fileName)
+						if err != nil {
+							log.Println("loadConfigFile is err !", err)
+						}
 					}
 				}
 			case err := <-watch.Errors:
@@ -169,7 +178,7 @@ func (conf *NadeConfig) loadConfigFile(folder string, file string) error {
 		// 读取app.path中的信息，更新app对应的folder
 		if name == "app" && conf.c.IsBind(contract.AppKey) {
 			if p, ok := c["path"]; ok {
-				appService := conf.c.MustMake(contract.AppKey).(contract.App)
+				appService := conf.c.MustMake(contract.AppKey).(contract.IApp)
 				appService.LoadAppConfig(cast.ToStringMapString(p))
 			}
 		}
@@ -178,7 +187,7 @@ func (conf *NadeConfig) loadConfigFile(folder string, file string) error {
 }
 
 // 删除文件的操作
-func (conf *NadeConfig) removeConfigFile(folder string, file string) error {
+func (conf *NadeConfig) removeConfigFile(_ string, file string) error {
 	conf.lock.Lock()
 	defer conf.lock.Unlock()
 	s := strings.Split(file, ".")

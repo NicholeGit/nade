@@ -7,10 +7,10 @@ const (
 	ConfigKey = "nade:config"
 )
 
-// Config 定义了配置文件服务，读取配置文件，支持点分割的路径读取
+// IConfig 定义了配置文件服务，读取配置文件，支持点分割的路径读取
 // 例如: .Get("app.name") 表示从app文件中读取name属性
 // 建议使用 yaml 属性, https://yaml.org/spec/1.2/spec.html
-type Config interface {
+type IConfig interface {
 	// IsExist 检查一个属性是否存在
 	IsExist(key string) bool
 
