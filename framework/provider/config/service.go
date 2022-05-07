@@ -2,6 +2,7 @@ package config
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,13 +11,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/NicholeGit/nade/framework/contract"
+	"github.com/fsnotify/fsnotify"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"github.com/spf13/cast"
 	"gopkg.in/yaml.v3"
 
 	"github.com/NicholeGit/nade/framework"
+	"github.com/NicholeGit/nade/framework/contract"
 )
 
 var _ contract.Config = &NadeConfig{}
@@ -55,6 +57,7 @@ func NewNadeConfig(params ...interface{}) (interface{}, error) {
 		return nadeConf, nil
 		// return nil, errors.New("folder " + envFolder + " not exist: " + err.Error())
 	}
+
 	// 读取每个文件
 	files, err := ioutil.ReadDir(envFolder)
 	if err != nil {
@@ -68,6 +71,57 @@ func NewNadeConfig(params ...interface{}) (interface{}, error) {
 			continue
 		}
 	}
+
+	// 监控文件夹文件
+	watch, err := fsnotify.NewWatcher()
+	if err != nil {
+		return nil, err
+	}
+	err = watch.Add(envFolder)
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err)
+			}
+		}()
+
+		for {
+			select {
+			case ev := <-watch.Events:
+				{
+					// 判断事件发生的类型
+					// Create 创建
+					// Write 写入
+					// Remove 删除
+					path, _ := filepath.Abs(ev.Name)
+					index := strings.LastIndex(path, string(os.PathSeparator))
+					folder := path[:index]
+					fileName := path[index+1:]
+
+					if ev.Op&fsnotify.Create == fsnotify.Create {
+						log.Println("创建文件 : ", ev.Name)
+						nadeConf.loadConfigFile(folder, fileName)
+					}
+					if ev.Op&fsnotify.Write == fsnotify.Write {
+						log.Println("写入文件 : ", ev.Name)
+						nadeConf.loadConfigFile(folder, fileName)
+					}
+					if ev.Op&fsnotify.Remove == fsnotify.Remove {
+						log.Println("删除文件 : ", ev.Name)
+						nadeConf.removeConfigFile(folder, fileName)
+					}
+				}
+			case err := <-watch.Errors:
+				{
+					log.Println("error : ", err)
+					return
+				}
+			}
+		}
+	}()
 
 	return nadeConf, nil
 }

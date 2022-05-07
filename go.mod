@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/erikdubbelboer/gspt v0.0.0-20210805194459-ce36a5128377
+	github.com/fsnotify/fsnotify v1.5.4
 	github.com/google/uuid v1.3.0
 	github.com/kr/pretty v0.3.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
