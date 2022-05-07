@@ -3,8 +3,8 @@ package contract
 // AppKey 定义字符串凭证
 const AppKey = "Nade:app"
 
-// App 定义接口
-type App interface {
+// IApp 定义接口
+type IApp interface {
 	// AppID 表示当前这个app的唯一id, 可以用于分布式锁等
 	AppID() string
 	// Version 定义当前版本

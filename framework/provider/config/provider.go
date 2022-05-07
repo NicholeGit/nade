@@ -34,7 +34,7 @@ func (provider *NadeConfigProvider) IsDefer() bool {
 
 // Params define the necessary params for NewInstance
 func (provider *NadeConfigProvider) Params(c framework.IContainer) []interface{} {
-	appService := c.MustMake(contract.AppKey).(contract.App)
+	appService := c.MustMake(contract.AppKey).(contract.IApp)
 	envService := c.MustMake(contract.EnvKey).(contract.IEnv)
 	env := envService.AppEnv()
 	// 配置文件夹地址

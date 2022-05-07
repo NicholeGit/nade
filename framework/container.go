@@ -82,7 +82,6 @@ func (n *NadeContainer) BindAll() error {
 	for _, p := range providers {
 		n.providerChan <- p
 	}
-
 	num := len(n.providerChan)
 	for num > 0 {
 		p := <-n.providerChan

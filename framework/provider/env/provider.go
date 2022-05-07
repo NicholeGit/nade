@@ -24,7 +24,7 @@ func (provider *NadeEnvProvider) Register(_ framework.IContainer) framework.NewI
 
 // Boot will called when the service instantiate
 func (provider *NadeEnvProvider) Boot(c framework.IContainer) error {
-	app := c.MustMake(contract.AppKey).(contract.App)
+	app := c.MustMake(contract.AppKey).(contract.IApp)
 	provider.Folder = app.BaseFolder()
 	return nil
 }

@@ -40,7 +40,7 @@ func (l *NadeLogServiceProvider) Register(c framework.IContainer) framework.NewI
 			// 默认使用console
 			return services.NewNadeConsoleLog
 		}
-		cs := tcs.(contract.Config)
+		cs := tcs.(contract.IConfig)
 		l.Driver = strings.ToLower(cs.GetString("log.driver"))
 	}
 	// 根据driver的配置项确定
@@ -66,7 +66,7 @@ func (l *NadeLogServiceProvider) Boot(_ framework.IContainer) error {
 // Params 定义要传递给实例化方法的参数
 func (l *NadeLogServiceProvider) Params(c framework.IContainer) []interface{} {
 	// 获取configService
-	configService := c.MustMake(contract.ConfigKey).(contract.Config)
+	configService := c.MustMake(contract.ConfigKey).(contract.IConfig)
 
 	// 设置参数formatter
 	if l.Formatter == nil {
@@ -103,7 +103,7 @@ func (l *NadeLogServiceProvider) IsDefer() bool {
 }
 
 func (l *NadeLogServiceProvider) DependOn() []string {
-	return []string{contract.ConfigKey}
+	return []string{contract.ConfigKey, contract.TraceKey}
 }
 
 // logLevel get level from string

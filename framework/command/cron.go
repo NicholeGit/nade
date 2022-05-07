@@ -59,7 +59,7 @@ var cronStartCommand = &cobra.Command{
 		// 获取容器
 		container := GetCommandContextKey(c).Container()
 		// 获取容器中的app服务
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		cron := GetCommandContextKey(c).Cron()
 		// 设置cron的日志地址和进程id地址
@@ -125,7 +125,7 @@ var cronStateCommand = &cobra.Command{
 	Short: "cron常驻进程状态",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		// GetPid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron.pid")
@@ -155,7 +155,7 @@ var cronStopCommand = &cobra.Command{
 	Short: "停止cron常驻进程",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		appService := container.MustMake(contract.AppKey).(contract.App)
+		appService := container.MustMake(contract.AppKey).(contract.IApp)
 
 		// GetPid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron.pid")

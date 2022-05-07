@@ -32,7 +32,7 @@ var configGetCommand = &cobra.Command{
 	Short: "获取某个配置信息",
 	RunE: func(c *cobra.Command, args []string) error {
 		container := GetCommandContextKey(c).Container()
-		configService := container.MustMake(contract.ConfigKey).(contract.Config)
+		configService := container.MustMake(contract.ConfigKey).(contract.IConfig)
 		if len(args) != 1 {
 			fmt.Println("参数错误")
 			return nil
