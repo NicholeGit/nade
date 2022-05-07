@@ -27,7 +27,7 @@ func AddAppCommand(ctx context.Context, rootCmd *cobra.Command) {
 
 	// 每秒调用一次Foo命令
 	c := ctx.Value(command.CommandCtxKey).(*command.CommandContextKey)
-	err := c.AddCronCommand(ctx, "* * * * * *", foo.FooCommand)
+	err := c.AddCronCommand(ctx, "*/5 * * * * *", foo.FooCommand)
 	if err != nil {
 		fmt.Println("AddCronCommand is error !", err)
 	}
