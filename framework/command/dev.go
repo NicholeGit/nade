@@ -236,7 +236,7 @@ func (p *Proxy) monitorBackend() error {
 		select {
 		case <-t.C:
 			// 计时器时间到了，代表之前有文件更新事件重置过计时器
-			// 即有文件更新
+			// 有文件更新
 			fmt.Println("...检测到文件更新，重启服务开始...")
 			fmt.Println("...期间请不要发送任何请求...")
 			if err := p.rebuildBackend(); err != nil {
