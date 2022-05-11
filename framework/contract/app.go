@@ -18,6 +18,8 @@ type IApp interface {
 	RuntimeFolder() string
 	// LogFolder 定义了日志所在路径
 	LogFolder() string
+	// MiddlewareFolder 定义业务自己定义的中间件
+	MiddlewareFolder() string
 
 	// LoadAppConfig 加载新的AppConfig，key为对应的函数转为小写下划线，比如ConfigFolder => config_folder
 	LoadAppConfig(kv map[string]string)
