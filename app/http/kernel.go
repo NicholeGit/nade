@@ -17,6 +17,7 @@ func NewGinEngine(container framework.IContainer) (*gin.Engine, error) {
 
 	// 默认注册recovery中间件
 	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
 
 	// 业务绑定路由操作
 	Routes(container, r)
