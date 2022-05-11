@@ -1,19 +1,23 @@
 package command
 
 import (
-	"errors"
+	"context"
+
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
 	"github.com/erikdubbelboer/gspt"
+	"github.com/pkg/errors"
 	"github.com/sevlyar/go-daemon"
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/NicholeGit/nade/framework"
 	"github.com/NicholeGit/nade/framework/contract"
@@ -70,6 +74,17 @@ var appStartCommand = &cobra.Command{
 			}
 		}
 
+		kernel := container.MustMake(contract.KernelKey).(contract.IKernel)
+		servers := kernel.Servers()
+		if appAddress != "" {
+			httpServer := kernel.GetServer("httpServer")
+			if httpServer != nil {
+				if err := httpServer.WithAddr(appAddress); err != nil {
+					return errors.Wrap(err, "appStartCommand WithAddr is error")
+				}
+			}
+		}
+
 		if appDaemon {
 			// 应用日志
 			serverLogFile := filepath.Join(logFolder, "app.log")
@@ -106,8 +121,8 @@ var appStartCommand = &cobra.Command{
 			defer cntxt.Release()
 			// 子进程执行真正的app启动操作
 			fmt.Println("deamon started")
-			gspt.SetProcTitle("appDaemon hade app ")
-			if err := startAppServe(container); err != nil {
+			gspt.SetProcTitle("appDaemon nade app ")
+			if err := startAppServe(c.Context(), servers, container); err != nil {
 				fmt.Println(err)
 			}
 			return nil
@@ -120,10 +135,11 @@ var appStartCommand = &cobra.Command{
 			return err
 		}
 
-		gspt.SetProcTitle("hade app")
+		gspt.SetProcTitle("nade app")
 
-		fmt.Println("app serve url:", appAddress)
-		if err := startAppServe(container); err != nil {
+		fmt.Printf("app serve url:\n%s", kernel.Info())
+
+		if err := startAppServe(c.Context(), servers, container); err != nil {
 			fmt.Println(err)
 		}
 		return nil
@@ -131,14 +147,52 @@ var appStartCommand = &cobra.Command{
 }
 
 // 启动AppServer, 这个函数会将当前goroutine阻塞
-func startAppServe(_ framework.IContainer) error {
+func startAppServe(ctx context.Context, servers []contract.IServer, c framework.IContainer) error {
+	// 服务器关闭 等待时间
+	closeWait := 5
+	configService := c.MustMake(contract.ConfigKey).(contract.IConfig)
+	if configService.IsExist("app.close_wait") {
+		closeWait = configService.GetInt("app.close_wait")
+	}
+
+	cancelCtx, cancel := context.WithCancel(ctx)
+	eg, groupCtx := errgroup.WithContext(cancelCtx)
+	wg := sync.WaitGroup{}
+	for _, srv := range servers {
+		srv := srv
+		eg.Go(func() error {
+			<-groupCtx.Done()
+			stopCtx, cancel := context.WithTimeout(ctx, time.Duration(closeWait)*time.Second)
+			defer cancel()
+			return srv.Stop(stopCtx)
+		})
+		wg.Add(1)
+		eg.Go(func() error {
+			wg.Done()
+			return srv.Start(ctx)
+		})
+	}
+	wg.Wait()
 	// 当前的goroutine等待信号量
 	quit := make(chan os.Signal)
 	// 监控信号：SIGINT, SIGTERM, SIGQUIT
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	// 这里会阻塞当前goroutine等待信号
-	<-quit
+	eg.Go(func() error {
+		for {
+			select {
+			case <-groupCtx.Done():
+				return ctx.Err()
+			case <-quit:
+				cancel()
+				return nil
+			}
+		}
+	})
 
+	if err := eg.Wait(); err != nil && !errors.Is(err, context.Canceled) {
+		return errors.Wrap(err, "errgroup is error !")
+	}
 	return nil
 }
 

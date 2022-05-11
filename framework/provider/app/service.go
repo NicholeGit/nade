@@ -69,13 +69,6 @@ func (app NadeApp) ConfigFolder() string {
 	return filepath.Join(app.BaseFolder(), "config")
 }
 
-// LoadAppConfig 加载配置map
-func (app *NadeApp) LoadAppConfig(kv map[string]string) {
-	for key, val := range kv {
-		app.configMap[key] = val
-	}
-}
-
 func (app *NadeApp) StorageFolder() string {
 	if val, ok := app.configMap["storage_folder"]; ok {
 		return val
@@ -97,4 +90,19 @@ func (app NadeApp) LogFolder() string {
 		return val
 	}
 	return filepath.Join(app.StorageFolder(), "log")
+}
+
+// LoadAppConfig 加载配置map
+func (app *NadeApp) LoadAppConfig(kv map[string]string) {
+	for key, val := range kv {
+		app.configMap[key] = val
+	}
+}
+
+// AppFolder 代表app目录
+func (app *NadeApp) AppFolder() string {
+	if val, ok := app.configMap["app_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.BaseFolder(), "app")
 }
