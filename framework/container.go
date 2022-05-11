@@ -112,7 +112,7 @@ func (n *NadeContainer) BindAll() error {
 
 // Bind 将服务容器和关键字做了绑定
 func (n *NadeContainer) bind(provider IServiceProvider) error {
-	fmt.Println("Bind", provider.Name())
+	fmt.Println("Bind 顺序", provider.Name())
 	n.lock.Lock()
 	key := provider.Name()
 	n.providers[key] = provider

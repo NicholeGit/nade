@@ -4,10 +4,9 @@ import (
 	"fmt"
 )
 
-// PrettyPrint 美观输出数组
-func PrettyPrint(arr [][]string) {
+func Pretty(arr [][]string) string {
 	if len(arr) == 0 {
-		return
+		return ""
 	}
 	rows := len(arr)
 	cols := len(arr[0])
@@ -28,15 +27,21 @@ func PrettyPrint(arr [][]string) {
 			}
 		}
 	}
-
+	var s string
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			fmt.Print(arr[i][j])
+			s += fmt.Sprint(arr[i][j])
 			padding := colMaxs[j] - lens[i][j] + 2
 			for p := 0; p < padding; p++ {
-				fmt.Print(" ")
+				s += fmt.Sprint(" ")
 			}
 		}
-		fmt.Print("\n")
+		s += fmt.Sprintf("\n")
 	}
+	return s
+}
+
+// PrettyPrint 美观输出数组
+func PrettyPrint(arr [][]string) {
+	fmt.Print(Pretty(arr))
 }
