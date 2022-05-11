@@ -106,3 +106,18 @@ func (app *NadeApp) AppFolder() string {
 	}
 	return filepath.Join(app.BaseFolder(), "app")
 }
+
+// MiddlewareFolder 定义业务自己定义的中间件
+func (app NadeApp) MiddlewareFolder() string {
+	if val, ok := app.configMap["middleware_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.HttpFolder(), "middleware")
+}
+
+func (app NadeApp) HttpFolder() string {
+	if val, ok := app.configMap["http_folder"]; ok {
+		return val
+	}
+	return filepath.Join(app.BaseFolder(), "app", "http")
+}

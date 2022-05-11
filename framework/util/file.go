@@ -1,6 +1,7 @@
 package util
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,4 +22,20 @@ func Exists(path string) bool {
 // IsHiddenDirectory 路径是否是隐藏路径
 func IsHiddenDirectory(path string) bool {
 	return len(path) > 1 && strings.HasPrefix(filepath.Base(path), ".")
+}
+
+// SubDir 输出所有子目录，目录名
+func SubDir(folder string) ([]string, error) {
+	subs, err := ioutil.ReadDir(folder)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret []string
+	for _, sub := range subs {
+		if sub.IsDir() {
+			ret = append(ret, sub.Name())
+		}
+	}
+	return ret, nil
 }
