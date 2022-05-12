@@ -93,8 +93,7 @@ func (k *ContextInfo) AddCronCommand(ctx context.Context, spec string, cmd *cobr
 	// 增加调用函数
 	id, err := k.cron.AddFunc(spec, func() {
 		// 制作一个rootCommand，必须放在这个里面做复制，否则会产生竞态
-		var cronCmd cobra.Command
-		cronCmd = *cmd
+		cronCmd := *cmd
 		cronCmd.ResetCommands()
 		cronCmd.SetArgs([]string{})
 		// cronCmd.SetParantNull()

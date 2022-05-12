@@ -33,10 +33,10 @@ func Pretty(arr [][]string) string {
 			s += fmt.Sprint(arr[i][j])
 			padding := colMaxs[j] - lens[i][j] + 2
 			for p := 0; p < padding; p++ {
-				s += fmt.Sprint(" ")
+				s += " "
 			}
 		}
-		s += fmt.Sprintf("\n")
+		s += "\n"
 	}
 	return s
 }

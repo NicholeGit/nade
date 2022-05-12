@@ -135,7 +135,7 @@ var cronStateCommand = &cobra.Command{
 			return err
 		}
 
-		if content != nil && len(content) > 0 {
+		if len(content) > 0 {
 			pid, err := strconv.Atoi(string(content))
 			if err != nil {
 				return err
@@ -165,7 +165,7 @@ var cronStopCommand = &cobra.Command{
 			return err
 		}
 
-		if content != nil && len(content) > 0 {
+		if len(content) > 0 {
 			pid, err := strconv.Atoi(string(content))
 			if err != nil {
 				return err
