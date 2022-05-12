@@ -109,7 +109,7 @@ var cronStartCommand = &cobra.Command{
 		fmt.Println("start cron job")
 		content := strconv.Itoa(os.Getpid())
 		fmt.Println("[PID]", content)
-		err := ioutil.WriteFile(serverPidFile, []byte(content), 0664)
+		err := ioutil.WriteFile(serverPidFile, []byte(content), 0600)
 		if err != nil {
 			return err
 		}
@@ -173,7 +173,7 @@ var cronStopCommand = &cobra.Command{
 			if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 				return err
 			}
-			if err := ioutil.WriteFile(serverPidFile, []byte{}, 0644); err != nil {
+			if err := ioutil.WriteFile(serverPidFile, []byte{}, 0600); err != nil {
 				return err
 			}
 			fmt.Println("stop pid:", pid)

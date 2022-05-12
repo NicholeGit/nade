@@ -23,5 +23,5 @@ func Routes(container framework.IContainer, r *gin.Engine) {
 	}
 
 	// 动态路由定义
-	_ = demo.Register(r)
+	demo.Register(r)
 }

@@ -120,7 +120,7 @@ var middlewareMigrateCommand = &cobra.Command{
 			if isContain {
 				fmt.Println("更新文件:" + path)
 				c = bytes.ReplaceAll(c, []byte("github.com/gin-gonic/gin"), []byte("github.com/gohade/hade/framework/gin"))
-				err = ioutil.WriteFile(path, c, 0644)
+				err = ioutil.WriteFile(path, c, 0600)
 				if err != nil {
 					return err
 				}
