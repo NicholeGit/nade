@@ -14,8 +14,7 @@ func init() {
 }
 
 // NadeKernelProvider 提供web引擎
-type NadeKernelProvider struct {
-}
+type NadeKernelProvider struct{}
 
 // Register 注册服务提供者
 func (provider *NadeKernelProvider) Register(_ framework.IContainer) framework.NewInstance {

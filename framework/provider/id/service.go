@@ -7,8 +7,7 @@ import (
 	"github.com/rs/xid"
 )
 
-type NadeIDService struct {
-}
+type NadeIDService struct{}
 
 func NewNadeIDService(_ ...interface{}) (interface{}, error) {
 	return &NadeIDService{}, nil

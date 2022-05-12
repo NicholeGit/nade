@@ -43,7 +43,7 @@ var cronListCommand = &cobra.Command{
 		cronSpecs := GetCommandContextKey(c).CronSpecs()
 		var ps [][]string
 		for _, cronSpec := range cronSpecs {
-			line := []string{cronSpec.Type, cronSpec.Spec, cronSpec.Cmd.Use, cronSpec.Cmd.Short, cronSpec.ServiceName, strconv.Itoa(cronSpec.Id)}
+			line := []string{cronSpec.Type, cronSpec.Spec, cronSpec.Cmd.Use, cronSpec.Cmd.Short, cronSpec.ServiceName, strconv.Itoa(cronSpec.ID)}
 			ps = append(ps, line)
 		}
 		util.PrettyPrint(ps)

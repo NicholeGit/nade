@@ -11,9 +11,9 @@ import (
 	"github.com/NicholeGit/nade/framework/contract"
 )
 
-type TraceKey string
+type Key string
 
-var ContextKey = TraceKey("trace-key")
+var ContextKey = Key("trace-key")
 
 type NadeTraceService struct {
 	idService contract.IDService
@@ -33,10 +33,9 @@ func (t *NadeTraceService) WithTrace(c context.Context, trace *contract.TraceCon
 	if ginC, ok := c.(*gin.Context); ok {
 		ginC.Set(string(ContextKey), trace)
 		return ginC
-	} else {
-		newC := context.WithValue(c, ContextKey, trace)
-		return newC
 	}
+	newC := context.WithValue(c, ContextKey, trace)
+	return newC
 }
 
 func (t *NadeTraceService) ToMap(tc *contract.TraceContext) map[string]string {

@@ -74,7 +74,7 @@ func (l *NadeLogServiceProvider) Params(c framework.IContainer) []interface{} {
 		if configService.IsExist("log.formatter") {
 			v := configService.GetString("log.formatter")
 			if v == "json" {
-				l.Formatter = formatter.JsonFormatter
+				l.Formatter = formatter.JSONFormatter
 			} else if v == "text" {
 				l.Formatter = formatter.TextFormatter
 			}

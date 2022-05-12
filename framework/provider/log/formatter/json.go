@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func JsonFormatter(level contract.LogLevel, t time.Time, msg string, fields map[string]interface{}) ([]byte, error) {
+func JSONFormatter(level contract.LogLevel, t time.Time, msg string, fields map[string]interface{}) ([]byte, error) {
 	bf := bytes.NewBuffer([]byte{})
 	if fields == nil {
 		fields = map[string]interface{}{}

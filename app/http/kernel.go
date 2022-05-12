@@ -29,7 +29,7 @@ func InitServer(container framework.IContainer) error {
 	// 创建 gin server
 	ginEngine, err := NewGinEngine(container)
 	if err != nil {
-		return errors.Wrap(err, "NewHttpEngine is error !")
+		return errors.Wrap(err, "new HttpEngine is error")
 	}
 
 	var appAddress string

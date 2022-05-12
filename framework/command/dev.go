@@ -107,7 +107,7 @@ func (p *Proxy) newProxyReverseProxy(frontend, backend *url.URL) *httputil.Rever
 		Director: director, // 先转发到后端服务
 		ModifyResponse: func(response *http.Response) error {
 			// 如果后端服务返回了404，我们返回NotFoundErr 会进入到errorHandler中
-			if response.StatusCode == 404 {
+			if response.StatusCode == http.StatusNotFound {
 				return NotFoundErr
 			}
 			return nil
@@ -117,7 +117,8 @@ func (p *Proxy) newProxyReverseProxy(frontend, backend *url.URL) *httputil.Rever
 			if errors.Is(err, NotFoundErr) {
 				httputil.NewSingleHostReverseProxy(frontend).ServeHTTP(writer, request)
 			}
-		}}
+		},
+	}
 }
 
 // rebuildBackend 重新编译后端
@@ -138,7 +139,6 @@ func (p *Proxy) rebuildBackend() error {
 
 // restartBackend 启动后端服务
 func (p *Proxy) restartBackend() error {
-
 	// 杀死之前的进程
 	if p.backendPid != 0 {
 		err := syscall.Kill(p.backendPid, syscall.SIGKILL)
@@ -159,8 +159,8 @@ func (p *Proxy) restartBackend() error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	fmt.Println("启动后端服务: ", "http://127.0.0.1:"+port)
-	err := cmd.Start()
-	if err != nil {
+
+	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
 	p.backendPid = cmd.Process.Pid
@@ -175,7 +175,7 @@ func (p *Proxy) startProxy(startBackend bool) error {
 
 	// 启动后端
 	if startBackend {
-		if err := p.restartBackend(); err != nil {
+		if err = p.restartBackend(); err != nil {
 			return err
 		}
 	}

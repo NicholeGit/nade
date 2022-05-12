@@ -2,19 +2,47 @@
 ##
 ## For more information, refer to https://www.thapaliya.com/en/writings/well-documented-makefiles/
 
+GO_RUN		= go run -race main.go
+
+SRC=$(shell find . -name "*.go")
+
+ifeq (, $(shell which richgo))
+$(warning "could not find richgo in $(PATH), run: go get github.com/kyoh86/richgo")
+endif
+
+ifeq (, $(shell which golangci-lint))
+$(warning "could not find golangci-lint in $(PATH), run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh")
+endif
+
 .DEFAULT_GOAL	:= help
 
 .PHONY: start
 start: ## run app start
-	go run main.go app start
+	$(GO_RUN) app start
 
 .PHONY: cron
 cron: ## run cron start
-	go run main.go cron start
+	$(GO_RUN) cron start
 
 .PHONY: dev
 dev: ## run dev
-	go run main.go dev backend
+	$(GO_RUN) dev backend
+
+.PHONY: fmt
+fmt: ## gofmt
+	$(info ******************** checking formatting ********************)
+	@test -z $(shell gofmt -l $(SRC)) || (gofmt -d $(SRC); exit 1)
+
+.PHONY: test
+test: lint  ## test
+	$(info ******************** running tests ********************)
+	richgo test -v ./...
+
+lint:  ## golangci-lint
+	$(info ******************** running lint tools ********************)
+	golangci-lint run -v
+
+
 
 ##@ Helpers
 .PHONY: help

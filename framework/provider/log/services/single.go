@@ -45,11 +45,10 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 		}
 	}
 
-	log.file = "hade.log"
+	log.file = "nade.log"
 	if configService.IsExist("log.file") {
 		log.file = configService.GetString("log.file")
 	}
-
 	fd, err := os.OpenFile(filepath.Join(log.folder, log.file), os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		return nil, errors.Wrap(err, "open log file err")

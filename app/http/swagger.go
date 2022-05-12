@@ -23,4 +23,4 @@
 
 package http
 
-import _ "github.com/NicholeGit/nade/app/http/swagger"
+// import _ "github.com/NicholeGit/nade/app/http/swagger"

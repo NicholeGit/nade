@@ -20,7 +20,7 @@ import (
 // SafeGo 函数并不会返回error，panic都会进入hade的日志服务
 func SafeGo(ctx context.Context, handler func()) {
 	var logger contract.ILog
-	if c, ok := ctx.Value(command.CommandCtxKey).(*command.CommandContextKey); ok {
+	if c, ok := ctx.Value(command.ContextKey).(*command.ContextInfo); ok {
 		container := c.Container()
 		if container.IsBind(contract.LogKey) {
 			logger = container.MustMake(contract.LogKey).(contract.ILog)
@@ -58,7 +58,7 @@ func SafeGoAndWait(ctx context.Context, handlers ...func() error) error {
 		err    error
 		logger contract.ILog
 	)
-	if c, ok := ctx.Value(command.CommandCtxKey).(*command.CommandContextKey); ok {
+	if c, ok := ctx.Value(command.ContextKey).(*command.ContextInfo); ok {
 		container := c.Container()
 		if container.IsBind(contract.LogKey) {
 			logger = container.MustMake(contract.LogKey).(contract.ILog)

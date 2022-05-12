@@ -7,36 +7,35 @@ import (
 )
 
 func init() {
-	err := framework.Register(&NadeIdProvider{})
+	err := framework.Register(&NadeIDProvider{})
 	if err != nil {
 		panic(errors.Wrap(err, "Register error"))
 	}
 }
 
-type NadeIdProvider struct {
-}
+type NadeIDProvider struct{}
 
 // Register registe a new function for make a service instance
-func (provider *NadeIdProvider) Register(_ framework.IContainer) framework.NewInstance {
+func (provider *NadeIDProvider) Register(_ framework.IContainer) framework.NewInstance {
 	return NewNadeIDService
 }
 
 // Boot will called when the service instantiate
-func (provider *NadeIdProvider) Boot(_ framework.IContainer) error {
+func (provider *NadeIDProvider) Boot(_ framework.IContainer) error {
 	return nil
 }
 
 // IsDefer define whether the service instantiate when first make or register
-func (provider *NadeIdProvider) IsDefer() bool {
+func (provider *NadeIDProvider) IsDefer() bool {
 	return false
 }
 
 // Params define the necessary params for NewInstance
-func (provider *NadeIdProvider) Params(_ framework.IContainer) []interface{} {
+func (provider *NadeIDProvider) Params(_ framework.IContainer) []interface{} {
 	return []interface{}{}
 }
 
 // Name define the name for this service
-func (provider *NadeIdProvider) Name() string {
+func (provider *NadeIDProvider) Name() string {
 	return contract.IDKey
 }

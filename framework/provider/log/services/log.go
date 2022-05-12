@@ -29,7 +29,7 @@ func (log *NadeLog) IsLevelEnable(level contract.LogLevel) bool {
 }
 
 // logf 为打印日志的核心函数
-func (log *NadeLog) logf(level contract.LogLevel, ctx context.Context, msg string, fields map[string]interface{}) error {
+func (log *NadeLog) logf(ctx context.Context, level contract.LogLevel, msg string, fields map[string]interface{}) error {
 	// 先判断日志级别
 	if !log.IsLevelEnable(level) {
 		return nil
@@ -92,37 +92,37 @@ func (log *NadeLog) SetOutput(output io.Writer) {
 
 // Panic 输出panic的日志信息
 func (log *NadeLog) Panic(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.PanicLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.PanicLevel, msg, fields)
 }
 
 // Fatal will add fatal record which contains msg and fields
 func (log *NadeLog) Fatal(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.FatalLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.FatalLevel, msg, fields)
 }
 
 // Error will add error record which contains msg and fields
 func (log *NadeLog) Error(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.ErrorLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.ErrorLevel, msg, fields)
 }
 
 // Warn will add warn record which contains msg and fields
 func (log *NadeLog) Warn(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.WarnLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.WarnLevel, msg, fields)
 }
 
 // Info 会打印出普通的日志信息
 func (log *NadeLog) Info(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.InfoLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.InfoLevel, msg, fields)
 }
 
 // Debug will add debug record which contains msg and fields
 func (log *NadeLog) Debug(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.DebugLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.DebugLevel, msg, fields)
 }
 
 // Trace will add trace info which contains msg and fields
 func (log *NadeLog) Trace(ctx context.Context, msg string, fields map[string]interface{}) {
-	_ = log.logf(contract.TraceLevel, ctx, msg, fields)
+	_ = log.logf(ctx, contract.TraceLevel, msg, fields)
 }
 
 // SetLevel set log level, and higher level will be recorded
