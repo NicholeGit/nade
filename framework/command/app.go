@@ -2,7 +2,6 @@ package command
 
 import (
 	"context"
-
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -162,8 +161,8 @@ func startAppServe(ctx context.Context, servers []contract.IServer, c framework.
 		srv := srv
 		eg.Go(func() error {
 			<-groupCtx.Done()
-			stopCtx, cancel := context.WithTimeout(ctx, time.Duration(closeWait)*time.Second)
-			defer cancel()
+			stopCtx, outCancel := context.WithTimeout(ctx, time.Duration(closeWait)*time.Second)
+			defer outCancel()
 			return srv.Stop(stopCtx)
 		})
 		wg.Add(1)
@@ -174,7 +173,7 @@ func startAppServe(ctx context.Context, servers []contract.IServer, c framework.
 	}
 	wg.Wait()
 	// 当前的goroutine等待信号量
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	// 监控信号：SIGINT, SIGTERM, SIGQUIT
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	// 这里会阻塞当前goroutine等待信号
@@ -191,7 +190,7 @@ func startAppServe(ctx context.Context, servers []contract.IServer, c framework.
 	})
 
 	if err := eg.Wait(); err != nil && !errors.Is(err, context.Canceled) {
-		return errors.Wrap(err, "errgroup is error !")
+		return errors.Wrap(err, "err group is error")
 	}
 	return nil
 }

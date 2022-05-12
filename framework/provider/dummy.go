@@ -1,6 +1,7 @@
 package provider
 
 import (
+	// init
 	_ "github.com/NicholeGit/nade/framework/provider/app"
 	_ "github.com/NicholeGit/nade/framework/provider/config"
 	_ "github.com/NicholeGit/nade/framework/provider/env"

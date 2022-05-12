@@ -12,7 +12,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const CommandCtxKey = "CommandCtx"
+type Key string
+
+var ContextKey = Key("CommandCtx")
 
 // CronSpec 保存Cron命令的信息，用于展示
 type CronSpec struct {
@@ -20,10 +22,10 @@ type CronSpec struct {
 	Cmd         *cobra.Command
 	Spec        string
 	ServiceName string
-	Id          int
+	ID          int
 }
 
-type CommandContextKey struct {
+type ContextInfo struct {
 	container framework.IContainer
 
 	// Command支持cron，只在RootCommand中有这个值
@@ -61,7 +63,7 @@ func GetRootCmd(container framework.IContainer) (*cobra.Command, context.Context
 	once.Do(func() {
 		// 绑定框架的命令
 		AddKernelCommands(gRootCmd)
-		gCtx = context.WithValue(gCtx, CommandCtxKey, &CommandContextKey{
+		gCtx = context.WithValue(gCtx, ContextKey, &ContextInfo{
 			container: container,
 			cron:      cron.New(cron.WithParser(cron.NewParser(cron.SecondOptional | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor))),
 			cronSpecs: []CronSpec{},
@@ -71,22 +73,23 @@ func GetRootCmd(container framework.IContainer) (*cobra.Command, context.Context
 }
 
 // GetCommandContextKey 从 cobra.Command 获取 CommandContext
-func GetCommandContextKey(cmd *cobra.Command) *CommandContextKey {
-	return cmd.Context().Value(CommandCtxKey).(*CommandContextKey)
+func GetCommandContextKey(cmd *cobra.Command) *ContextInfo {
+	return cmd.Context().Value(ContextKey).(*ContextInfo)
 }
 
-func (k *CommandContextKey) Container() framework.IContainer {
+func (k *ContextInfo) Container() framework.IContainer {
 	return k.container
 }
 
-func (k *CommandContextKey) CronSpecs() []CronSpec {
+func (k *ContextInfo) CronSpecs() []CronSpec {
 	return k.cronSpecs
 }
-func (k *CommandContextKey) Cron() *cron.Cron {
+
+func (k *ContextInfo) Cron() *cron.Cron {
 	return k.cron
 }
 
-func (k *CommandContextKey) AddCronCommand(ctx context.Context, spec string, cmd *cobra.Command) error {
+func (k *ContextInfo) AddCronCommand(ctx context.Context, spec string, cmd *cobra.Command) error {
 	// 增加调用函数
 	id, err := k.cron.AddFunc(spec, func() {
 		// 制作一个rootCommand，必须放在这个里面做复制，否则会产生竞态
@@ -121,8 +124,7 @@ func (k *CommandContextKey) AddCronCommand(ctx context.Context, spec string, cmd
 		Type: "normal-cron",
 		Cmd:  cmd,
 		Spec: spec,
-		Id:   int(id),
+		ID:   int(id),
 	})
 	return nil
-
 }

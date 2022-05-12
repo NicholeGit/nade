@@ -2,23 +2,23 @@ package demo
 
 import (
 	"net/http"
-
+	// init
 	_ "github.com/NicholeGit/nade/app/provider/demo"
 	"github.com/gin-gonic/gin"
 )
 
-type DemoApi struct {
+type DemoAPI struct {
 	// service *Service
 }
 
-func NewDemoApi() *DemoApi {
+func NewDemoAPI() *DemoAPI {
 	// service := NewService()
-	// return &DemoApi{service: service}
-	return &DemoApi{}
+	// return &DemoAPI{service: service}
+	return &DemoAPI{}
 }
 
 func Register(r *gin.Engine) error {
-	api := NewDemoApi()
+	api := NewDemoAPI()
 	r.GET("/demo/demo", api.Demo)
 	// r.GET("/demo/demo2", api.Demo2)
 	// r.POST("/demo/demo_post", api.DemoPost)
@@ -34,6 +34,6 @@ func Register(r *gin.Engine) error {
 // @Tags demo
 // @Success 200 array []string
 // @Router /demo/demo [get]
-func (api *DemoApi) Demo(c *gin.Context) {
+func (api *DemoAPI) Demo(c *gin.Context) {
 	c.JSON(http.StatusOK, "this is demo for dev all")
 }

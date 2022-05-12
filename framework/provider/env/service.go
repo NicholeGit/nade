@@ -60,7 +60,8 @@ func NewNadeEnv(params ...interface{}) (interface{}, error) {
 			// 按照等号解析
 			s := bytes.SplitN(line, []byte{'='}, 2)
 			// 如果不符合规范，则过滤
-			if len(s) < 2 {
+			const param = 2
+			if len(s) < param {
 				continue
 			}
 			// 保存map
@@ -73,7 +74,8 @@ func NewNadeEnv(params ...interface{}) (interface{}, error) {
 	// 获取当前程序的环境变量，并且覆盖.env文件下的变量
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
-		if len(pair) < 2 {
+		const param = 2
+		if len(pair) < param {
 			continue
 		}
 		nadeEnv.maps[pair[0]] = pair[1]

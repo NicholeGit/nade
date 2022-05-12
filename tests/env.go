@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/NicholeGit/nade/framework"
+	// init provider
 	_ "github.com/NicholeGit/nade/framework/provider"
 	"github.com/pkg/errors"
 )
@@ -9,9 +10,9 @@ import (
 func InitBaseContainer() framework.IContainer {
 	// 初始化服务容器
 	container := framework.NewNadeContainer()
-	err := container.BindAll()
-	if err != nil {
-		panic(errors.Wrap(err, "BindAll is err !"))
+
+	if err := container.BindAll(); err != nil {
+		panic(errors.Wrap(err, "bindAll is err"))
 	}
 	return container
 }

@@ -1,13 +1,13 @@
 package http
 
 import (
+	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
 	"github.com/NicholeGit/nade/app/http/module/demo"
 	"github.com/NicholeGit/nade/framework"
 	"github.com/NicholeGit/nade/framework/contract"
-	"github.com/gin-gonic/gin"
-
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 // Routes 绑定业务层路由

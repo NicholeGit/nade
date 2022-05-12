@@ -68,7 +68,7 @@ func NewNadeContainer() *NadeContainer {
 
 // PrintProviders 输出服务容器中注册的关键字
 func (n *NadeContainer) PrintProviders() []string {
-	var ret []string
+	ret := make([]string, 0, len(n.providers))
 	for _, provider := range n.providers {
 		name := provider.Name()
 		line := fmt.Sprint(name)
@@ -89,7 +89,7 @@ func (n *NadeContainer) BindAll() error {
 		if deps, ok := p.(IDepend); ok {
 			depends := deps.DependOn()
 			for _, dependName := range depends {
-				if p := n.findServiceProvider(dependName); p == nil {
+				if tp := n.findServiceProvider(dependName); tp == nil {
 					// 有未加载的前置插件
 					canBind = false
 					break
@@ -211,7 +211,7 @@ func (n *NadeContainer) make(key string, params []interface{}, forceNew bool) (i
 
 // NameList 列出容器中所有服务提供者的字符串凭证
 func (n *NadeContainer) NameList() []string {
-	var ret []string
+	ret := make([]string, 0, len(n.providers))
 	for _, provider := range n.providers {
 		name := provider.Name()
 		ret = append(ret, name)

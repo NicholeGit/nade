@@ -65,7 +65,7 @@ func NewNadeConfig(params ...interface{}) (interface{}, error) {
 	}
 	for _, file := range files {
 		fileName := file.Name()
-		err := nadeConf.loadConfigFile(envFolder, fileName)
+		err = nadeConf.loadConfigFile(envFolder, fileName)
 		if err != nil {
 			log.Println(err)
 			continue

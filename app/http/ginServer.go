@@ -40,11 +40,11 @@ func NewGinServer(engine *gin.Engine, addr string) contract.IServer {
 func (g *GinServer) Start(_ context.Context) error {
 	fmt.Println("GinServer Start")
 	if g.server == nil {
-		return errors.New("GinServer is not init !")
+		return errors.New("gin Server is not init")
 	}
 	g.isRun = true
 	if err := g.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		return errors.Wrap(err, "ListenAndServe is error !")
+		return errors.Wrap(err, "listen And Serve is error")
 	}
 	g.isRun = false
 	return nil

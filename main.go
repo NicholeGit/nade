@@ -16,12 +16,12 @@ func main() {
 
 	err := container.BindAll()
 	if err != nil {
-		panic(errors.Wrap(err, "BindAll is err !"))
+		panic(errors.Wrap(err, "bindAll is err"))
 	}
 
 	// 将HTTP引擎初始化,并且作为服务提供者绑定到服务容器中
-	if err := http.InitServer(container); err != nil {
-		panic(errors.Wrap(err, "InitServer is err !"))
+	if err = http.InitServer(container); err != nil {
+		panic(errors.Wrap(err, "initServer is err"))
 	}
 
 	// 运行root命令
@@ -29,5 +29,4 @@ func main() {
 	if err != nil {
 		fmt.Println("RunCommand is err !", err)
 	}
-
 }

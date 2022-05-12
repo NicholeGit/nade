@@ -41,5 +41,4 @@ func TestTrace(t *testing.T) {
 	// =====
 	tc = trace.ExtractHTTP(request)
 	t.Logf("接收后:\t%s\n", trace.ToMap(tc))
-
 }
