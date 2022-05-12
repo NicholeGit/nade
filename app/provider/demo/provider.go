@@ -6,35 +6,35 @@ import (
 )
 
 func init() {
-	err := framework.Register(&DemoProvider{})
+	err := framework.Register(&Provider{})
 	if err != nil {
 		panic(errors.Wrap(err, "Register error"))
 	}
 }
 
-type DemoProvider struct {
+type Provider struct {
 	framework.IServiceProvider
 
 	c framework.IContainer
 }
 
-func (sp *DemoProvider) Name() string {
+func (sp *Provider) Name() string {
 	return DemoKey
 }
 
-func (sp *DemoProvider) Register(_ framework.IContainer) framework.NewInstance {
+func (sp *Provider) Register(_ framework.IContainer) framework.NewInstance {
 	return NewService
 }
 
-func (sp *DemoProvider) IsDefer() bool {
+func (sp *Provider) IsDefer() bool {
 	return false
 }
 
-func (sp *DemoProvider) Params(_ framework.IContainer) []interface{} {
+func (sp *Provider) Params(_ framework.IContainer) []interface{} {
 	return []interface{}{sp.c}
 }
 
-func (sp *DemoProvider) Boot(c framework.IContainer) error {
+func (sp *Provider) Boot(c framework.IContainer) error {
 	sp.c = c
 	return nil
 }
