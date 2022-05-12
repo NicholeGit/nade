@@ -7,14 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DemoAPI struct {
+type API struct {
 	// service *Service
 }
 
-func NewDemoAPI() *DemoAPI {
+func NewDemoAPI() *API {
 	// service := NewService()
-	// return &DemoAPI{service: service}
-	return &DemoAPI{}
+	// return &API{service: service}
+	return &API{}
 }
 
 func Register(r *gin.Engine) {
@@ -33,6 +33,6 @@ func Register(r *gin.Engine) {
 // @Tags demo
 // @Success 200 array []string
 // @Router /demo/demo [get]
-func (api *DemoAPI) Demo(c *gin.Context) {
+func (api *API) Demo(c *gin.Context) {
 	c.JSON(http.StatusOK, "this is demo for dev all")
 }
