@@ -1,0 +1,96 @@
+run:
+  go: '1.18'
+  timeout: 5m
+  skip-files:
+    - ^.*\.(pb|gen)\.go$
+
+output:
+  sort-results: true
+
+linters-settings:
+  dupl:
+    threshold: 200
+  goconst:
+    ignore-tests: true
+  gocognit:
+    min-complexity: 15 # default 30, recommend 10-20
+  gomnd:
+    checks:
+      - case
+      - condition
+      - return
+  govet:
+    check-shadowing: true
+  gosec:
+    excludes:
+      - G404
+  lll:
+    line-length: 160
+  nestif:
+    min-complexity: 7
+  staticcheck:
+    go: "1.18"
+    checks: [
+      "all",
+    ]
+  unused:
+    go: "1.18"
+
+linters:
+  disable-all: true
+  enable: # please keep this alphabetized
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - decorder
+    - depguard
+    - dogsled
+    - dupl
+    - durationcheck
+    - errname
+    - exportloopref
+    # - gocognit # FIXME must be fixed
+    - goconst
+    - gofmt
+    # - gofumpt
+    - goimports
+    - gomnd
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - grouper
+    - ifshort
+    - importas
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr
+    - noctx
+    - prealloc
+    - promlinter
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - stylecheck
+    - tagliatelle
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - wastedassign
+    - whitespace
+
+issues:
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - funlen
+        - dupl
