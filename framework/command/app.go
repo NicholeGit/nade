@@ -129,7 +129,7 @@ var appStartCommand = &cobra.Command{
 		// 非deamon模式，直接执行
 		content := strconv.Itoa(os.Getpid())
 		fmt.Println("[PID]", content)
-		err := ioutil.WriteFile(serverPidFile, []byte(content), 0644)
+		err := ioutil.WriteFile(serverPidFile, []byte(content), 0600)
 		if err != nil {
 			return err
 		}
@@ -251,7 +251,7 @@ var appStopCommand = &cobra.Command{
 			if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 				return err
 			}
-			if err := ioutil.WriteFile(serverPidFile, []byte{}, 0644); err != nil {
+			if err := ioutil.WriteFile(serverPidFile, []byte{}, 0600); err != nil {
 				return err
 			}
 			fmt.Println("停止进程:", pid)
@@ -313,7 +313,7 @@ var appRestartCommand = &cobra.Command{
 					fmt.Println("结束进程失败:"+strconv.Itoa(pid), "请查看原因")
 					return errors.New("结束进程失败")
 				}
-				if err := ioutil.WriteFile(serverPidFile, []byte{}, 0644); err != nil {
+				if err := ioutil.WriteFile(serverPidFile, []byte{}, 0600); err != nil {
 					return err
 				}
 
