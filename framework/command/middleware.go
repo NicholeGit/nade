@@ -7,14 +7,13 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/go-git/go-git/v5"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 
 	"github.com/NicholeGit/nade/framework/contract"
 	"github.com/NicholeGit/nade/framework/util"
@@ -62,8 +61,9 @@ var middlewareAllCommand = &cobra.Command{
 	},
 }
 
-// 从gin-contrib中迁移中间件 middlewareMigrateCommand
-var _ = &cobra.Command{
+// 从gin-contrib中迁移中间件
+var _ = middlewareMigrateCommand
+var middlewareMigrateCommand = &cobra.Command{
 	Use:   "migrate",
 	Short: "迁移gin-contrib中间件, 迁移地址：https://github.com/gin-contrib/[middleware].git",
 	RunE: func(c *cobra.Command, args []string) error {
