@@ -8,6 +8,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/NicholeGit/nade/framework/util/errorx"
 	"github.com/pkg/errors"
 
 	"github.com/NicholeGit/nade/framework/command"
@@ -95,19 +96,20 @@ func SafeGoAndWait(ctx context.Context, handlers ...func() error) error {
 	return err
 }
 
-func GraceStop(ctx context.Context, stopFunc ...func()) error {
+func GraceStop(ctx context.Context, stopFunc ...func() error) error {
 	waitChan := make(chan int)
+	var batchErr errorx.BatchError
 	SafeGo(ctx, func() {
 		defer close(waitChan)
 		for _, v := range stopFunc {
-			v()
+			batchErr.Add(v())
 		}
 	})
 
 	for {
 		select {
 		case <-waitChan:
-			return nil
+			return batchErr.Err()
 		case <-ctx.Done():
 			return errors.Wrap(ctx.Err(), "GraceStop is error")
 		}

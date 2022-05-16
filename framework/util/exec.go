@@ -24,8 +24,5 @@ func CheckProcessExist(pid int) bool {
 
 	// 给进程发送signal 0, 如果返回nil，代表进程存在, 否则进程不存在
 	err = process.Signal(syscall.Signal(0))
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }

@@ -216,10 +216,10 @@ func searchMap(source map[string]interface{}, path []string) interface{} {
 		}
 
 		// 判断下一个路径的类型
-		switch next.(type) {
+		switch tmp := next.(type) {
 		case map[interface{}]interface{}:
 			// 如果是interface的map，使用cast进行下value转换
-			return searchMap(cast.ToStringMap(next), path[1:])
+			return searchMap(cast.ToStringMap(tmp), path[1:])
 		case map[string]interface{}:
 			// 如果是map[string]，直接循环调用
 			return searchMap(next.(map[string]interface{}), path[1:])
