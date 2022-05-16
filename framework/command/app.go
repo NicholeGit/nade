@@ -139,7 +139,10 @@ var appStartCommand = &cobra.Command{
 		fmt.Printf("app serve url:\n%s", kernel.Info())
 
 		if err := startAppServe(c.Context(), servers, container); err != nil {
-			fmt.Println(err)
+			return err
+		}
+		if err := ioutil.WriteFile(serverPidFile, []byte{}, 0600); err != nil {
+			return err
 		}
 		return nil
 	},
@@ -236,7 +239,6 @@ var appStopCommand = &cobra.Command{
 
 		// GetPid
 		serverPidFile := filepath.Join(appService.RuntimeFolder(), "app.pid")
-
 		content, err := ioutil.ReadFile(serverPidFile)
 		if err != nil {
 			return err
@@ -292,7 +294,6 @@ var appRestartCommand = &cobra.Command{
 				if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
 					return err
 				}
-
 				// 获取closeWait
 				closeWait := 5
 				configService := container.MustMake(contract.ConfigKey).(contract.IConfig)
@@ -307,7 +308,6 @@ var appRestartCommand = &cobra.Command{
 					}
 					time.Sleep(1 * time.Second)
 				}
-
 				// 如果进程等待了2*closeWait之后还没结束，返回错误，不进行后续的操作
 				if util.CheckProcessExist(pid) {
 					fmt.Println("结束进程失败:"+strconv.Itoa(pid), "请查看原因")

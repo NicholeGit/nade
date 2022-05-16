@@ -11,7 +11,7 @@ type IApp interface {
 	Version() string
 
 	// WithBaseFolder 设置项目基础地址
-	WithBaseFolder(string)
+	WithBaseFolder(string) error
 	// BaseFolder 项目基础地址
 	BaseFolder() string
 	// ConfigFolder 定义了配置文件的路径

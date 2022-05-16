@@ -18,7 +18,10 @@ func TestAppStart(t *testing.T) {
 	var err error
 	rootCmd, ctx := command.GetRootCmd(container)
 	app := container.MustMake(contract.AppKey).(contract.IApp)
-	app.WithBaseFolder("../../")
+	err = app.WithBaseFolder("../../")
+	if err != nil {
+		t.Error(err)
+	}
 
 	kernel := container.MustMake(contract.KernelKey).(contract.IKernel)
 	err = kernel.AddServers(tServer)
@@ -28,7 +31,7 @@ func TestAppStart(t *testing.T) {
 
 	go func() {
 		rootCmd.SetArgs([]string{"app", "start"})
-		rootCmd, err = rootCmd.ExecuteContextC(ctx)
+		_, err = rootCmd.ExecuteContextC(ctx)
 		if err != nil {
 			t.Error(err)
 		}

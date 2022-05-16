@@ -121,6 +121,11 @@ func (app NadeApp) HTTPFolder() string {
 	return filepath.Join(app.BaseFolder(), "app", "http")
 }
 
-func (app *NadeApp) WithBaseFolder(folder string) {
-	app.baseFolder = folder
+func (app *NadeApp) WithBaseFolder(folder string) error {
+	f, err := filepath.Abs(folder)
+	if err != nil {
+		return err
+	}
+	app.baseFolder = f
+	return nil
 }
