@@ -56,7 +56,6 @@ func (app NadeApp) BaseFolder() string {
 	if app.baseFolder != "" {
 		return app.baseFolder
 	}
-
 	// 如果参数也没有，使用默认的当前路径
 	return util.GetExecDirectory()
 }
@@ -120,4 +119,13 @@ func (app NadeApp) HTTPFolder() string {
 		return val
 	}
 	return filepath.Join(app.BaseFolder(), "app", "http")
+}
+
+func (app *NadeApp) WithBaseFolder(folder string) error {
+	f, err := filepath.Abs(folder)
+	if err != nil {
+		return err
+	}
+	app.baseFolder = f
+	return nil
 }
