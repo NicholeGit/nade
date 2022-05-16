@@ -7,13 +7,15 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
+
 	"text/template"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/go-git/go-git/v5"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/NicholeGit/nade/framework/contract"
 	"github.com/NicholeGit/nade/framework/util"
