@@ -36,7 +36,8 @@ fmt: ## gofmt
 .PHONY: test
 test: lint  ## test
 	$(info ******************** running tests ********************)
-	richgo test -v ./...
+	richgo test -v ./...  -covermode=atomic
+	# go test  -covermode=atomic  ./...  覆盖率
 
 lint:  ## golangci-lint
 	$(info ******************** running lint tools ********************)

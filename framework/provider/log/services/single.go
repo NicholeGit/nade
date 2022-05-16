@@ -57,6 +57,7 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 
 	log.SetOutput(fd)
 	log.c = c
+	log.fd = fd
 
 	return log, nil
 }

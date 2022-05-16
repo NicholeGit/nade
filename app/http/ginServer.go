@@ -52,8 +52,8 @@ func (g *GinServer) Start(_ context.Context) error {
 
 func (g *GinServer) Stop(ctx context.Context) error {
 	fmt.Println("GinServer Stop")
-	err := goroutine.GraceStop(ctx, func() {
-		_ = g.server.Shutdown(ctx)
+	err := goroutine.GraceStop(ctx, func() error {
+		return g.server.Shutdown(ctx)
 	})
 	if err != nil {
 		return errors.Wrap(err, "GinServer stop is error")

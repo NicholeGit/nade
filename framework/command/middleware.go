@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
 	"text/template"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -186,8 +187,7 @@ var middlewareCreateCommand = &cobra.Command{
 		if err := os.MkdirAll(filepath.Join(pFolder, folder), 0700); err != nil {
 			return err
 		}
-
-		funcs := template.FuncMap{"title": cases.Title(language.English).String} // 替换 string.strings.Title
+		funcs := template.FuncMap{"title": cases.Title(language.English).String}
 		{
 			//  创建
 			file := filepath.Join(pFolder, folder, "middleware.go")
