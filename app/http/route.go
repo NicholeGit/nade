@@ -18,7 +18,7 @@ func Routes(container framework.IContainer, r *gin.Engine) {
 	// r.Use(static.Serve("/", static.LocalFile("./dist", false)))
 	//
 	// 如果配置了swagger，则显示swagger的中间件
-	if configService.GetBool("app.swagger") == true {
+	if configService.GetBool("app.swagger") {
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 

@@ -119,7 +119,7 @@ func (n *NadeContainer) bind(provider IServiceProvider) error {
 	n.lock.Unlock()
 
 	// if provider is not defer
-	if provider.IsDefer() == false {
+	if !provider.IsDefer() {
 		if err := provider.Boot(n); err != nil {
 			return err
 		}

@@ -53,6 +53,7 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "open log file err")
 	}
+	log.fd = fd
 
 	log.SetOutput(fd)
 	log.c = c

@@ -39,10 +39,8 @@ func (log *NadeLog) logf(ctx context.Context, level contract.LogLevel, msg strin
 	fs := fields
 	if log.ctxFielder != nil {
 		t := log.ctxFielder(ctx)
-		if t != nil {
-			for k, v := range t {
-				fs[k] = v
-			}
+		for k, v := range t {
+			fs[k] = v
 		}
 	}
 

@@ -7,13 +7,14 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"text/template"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/go-git/go-git/v5"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/NicholeGit/nade/framework/contract"
 	"github.com/NicholeGit/nade/framework/util"
@@ -62,6 +63,7 @@ var middlewareAllCommand = &cobra.Command{
 }
 
 // 从gin-contrib中迁移中间件
+var _ = middlewareMigrateCommand
 var middlewareMigrateCommand = &cobra.Command{
 	Use:   "migrate",
 	Short: "迁移gin-contrib中间件, 迁移地址：https://github.com/gin-contrib/[middleware].git",
@@ -96,14 +98,14 @@ var middlewareMigrateCommand = &cobra.Command{
 		// step3:删除不必要的文件 go.mod, go.sum, .git
 		repoFolder := path.Join(middlewarePath, repo)
 		fmt.Println("remove " + path.Join(repoFolder, "go.mod"))
-		os.Remove(path.Join(repoFolder, "go.mod"))
+		_ = os.Remove(path.Join(repoFolder, "go.mod"))
 		fmt.Println("remove " + path.Join(repoFolder, "go.sum"))
-		os.Remove(path.Join(repoFolder, "go.sum"))
+		_ = os.Remove(path.Join(repoFolder, "go.sum"))
 		fmt.Println("remove " + path.Join(repoFolder, ".git"))
-		os.RemoveAll(path.Join(repoFolder, ".git"))
+		_ = os.RemoveAll(path.Join(repoFolder, ".git"))
 
 		// step4 : 替换关键词
-		filepath.Walk(repoFolder, func(path string, info os.FileInfo, err error) error {
+		_ = filepath.Walk(repoFolder, func(path string, info os.FileInfo, _ error) error {
 			if info.IsDir() {
 				return nil
 			}
@@ -184,7 +186,8 @@ var middlewareCreateCommand = &cobra.Command{
 		if err := os.MkdirAll(filepath.Join(pFolder, folder), 0700); err != nil {
 			return err
 		}
-		funcs := template.FuncMap{"title": strings.Title}
+
+		funcs := template.FuncMap{"title": cases.Title(language.English).String} // 替换 string.strings.Title
 		{
 			//  创建
 			file := filepath.Join(pFolder, folder, "middleware.go")
